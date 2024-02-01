@@ -11,14 +11,14 @@
 				<label for="bread">Escolha o pão:</label>
 				<select name="bread" id="bread" v-model="bread">
 					<option value="">Selecione o seu pão</option>
-					<option value="integral">Integral</option>
+					<option v-for="bread in breads" :key="bread.id" :value="bread.tipo">{{ bread.tipo }}</option>
 				</select>
 			</div>
 			<div class="input-container">
 				<label for="meat">Escolha a carne do seu Burger:</label>
 				<select name="meat" id="meat" v-model="meat">
 					<option value="">Selecione a sua carne</option>
-					<option value="alcatra">Alcatra</option>
+					<option v-for="meat in meats" :key="meat.id" :value="bread.tipo">{{ meat.tipo }}</option>
 				</select>
 			</div>
 			<div id="opcionais-container" class="input-container">
@@ -38,7 +38,32 @@
 
 <script>
 export default {
-	name:"BurgerForm"
+	name:"BurgerForm",
+	data () {
+		return {
+			breads: null,
+			meats: null,
+			optionaldata:null,
+			bread: null,
+			meat: null,
+			optional: [],
+			status:"Solicitado",
+			msg:null
+		}
+	},
+	methods:{
+		async getIngredients() {
+			const req = await fetch('http://localhost:3000/ingredientes')
+			const data = await req.json();
+
+			this.breads = data.paes
+			this.meats = data.carnes
+			this.optionaldata = data.opcionais
+		}
+	},
+	mounted() {
+		this.getIngredients()
+	}
 }
 </script>
 
