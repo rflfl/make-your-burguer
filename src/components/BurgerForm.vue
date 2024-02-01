@@ -18,14 +18,14 @@
 				<label for="meat">Escolha a carne do seu Burger:</label>
 				<select name="meat" id="meat" v-model="meat">
 					<option value="">Selecione a sua carne</option>
-					<option v-for="meat in meats" :key="meat.id" :value="bread.tipo">{{ meat.tipo }}</option>
+					<option v-for="meat in meats" :key="meat.id" :value="meat.tipo">{{ meat.tipo }}</option>
 				</select>
 			</div>
 			<div id="opcionais-container" class="input-container">
-				<label id="opcionais-title" for="meat">Selecione os opcionais:</label>
-				<div class="checkbox-container">
-					<input type="checkbox" name="optional" id="optional" value="molho">
-					<span>Molho</span>
+				<label id="opcionais-title" for="optional">Selecione os opcionais:</label>
+				<div v-for="optional in optionaldata" :key="optional.id" class="checkbox-container">
+					<input type="checkbox" name="optional" id="optional" :value="optional.tipo">
+					<span>{{optional.tipo}}</span>
 				</div>
 			</div>
 			<div class="input-container">
@@ -59,6 +59,7 @@ export default {
 			this.breads = data.paes
 			this.meats = data.carnes
 			this.optionaldata = data.opcionais
+			console.log(data.carnes)
 		}
 	},
 	mounted() {
