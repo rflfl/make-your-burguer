@@ -2,7 +2,7 @@
   <div>
 	<p>mensagem</p>
 	<div>
-		<form action="" id="burger-form">
+		<form id="burger-form" @submit="createBurger">
 			<div class="input-container">
 				<label for="name">Nome do cliente</label>
 				<input type="text" id="name" v-model="name" placeholder="Digite o seu nome">
@@ -24,7 +24,7 @@
 			<div id="opcionais-container" class="input-container">
 				<label id="opcionais-title" for="optional">Selecione os opcionais:</label>
 				<div v-for="optional in optionaldata" :key="optional.id" class="checkbox-container">
-					<input type="checkbox" name="optional" id="optional" :value="optional.tipo">
+					<input type="checkbox" name="optional" id="optional" v-model="opcionais" :value="optional.tipo">
 					<span>{{optional.tipo}}</span>
 				</div>
 			</div>
@@ -41,12 +41,13 @@ export default {
 	name:"BurgerForm",
 	data () {
 		return {
+			name:null,
 			breads: null,
 			meats: null,
 			optionaldata:null,
 			bread: null,
 			meat: null,
-			optional: [],
+			opcionais: [],
 			status:"Solicitado",
 			msg:null
 		}
@@ -59,8 +60,34 @@ export default {
 			this.breads = data.paes
 			this.meats = data.carnes
 			this.optionaldata = data.opcionais
-			console.log(data.carnes)
+		},
+		async createBurger(e){
+			e.preventDefault();
+
+			const data = {
+				nome: this.name,
+				carne: this.meat,
+				pao: this.bread,
+				opcionais: Array.from(this.opcionais),
+				status: "Solicitado"
+			}
+
+			const dataJson = JSON.stringify(data)
+
+			const req = await fetch('http://localhost:3000/burgers', {
+				method:"POST",
+				headers: {"Content-Type": "application/json"},
+				body: dataJson
+			})
+
+			const res = await req.json();
+
+			this.name = ''
+			this.meat = ''
+			this.bread = ''
+			this.opcionais = ''
 		}
+
 	},
 	mounted() {
 		this.getIngredients()
