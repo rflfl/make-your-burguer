@@ -93,7 +93,7 @@ export default {
 			this.name = ''
 			this.meat = ''
 			this.bread = ''
-			this.opcionais = ''
+			this.opcionais = []
 		}
 
 	},

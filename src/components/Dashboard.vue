@@ -12,9 +12,9 @@
 			<div id="burger-table-rows">
 				<div v-for="burger in burgers" :key="burger.id" class="burger-table-row">
 					<div class="order-number">{{ burger.id }}</div>
-					<div>{{burger.nome}}</div>
-					<div>{{burger.pao}}</div>
-					<div>{{burger.carne}}</div>
+					<div>{{ burger.nome }}</div>
+					<div>{{ burger.pao }}</div>
+					<div>{{ burger.carne }}</div>
 					<div>
 						<ul>
 							<li v-for="(opcional, index) in burger.opcionais" :key="index">
@@ -23,9 +23,10 @@
 						</ul>
 					</div>
 					<div>
-						<select name="status" class="status">
-							<option v-for="current in status" :key="current.id" value="current.tipo" :selected="burger.status == current.tipo">
-								{{ current.tipo }}	
+						<select name="status" class="status" @change="updateBurger($event, burger.id)">
+							<option v-for="current in status" :key="current.id" :value="current.tipo"
+								:selected="burger.status == current.tipo">
+								{{ current.tipo }}
 							</option>
 						</select>
 						<button class="delete-btn" @click="deletePedido(burger.id)">Cancelar</button>
@@ -47,7 +48,7 @@ export default {
 		}
 	},
 	methods: {
-		async getPedidos(){
+		async getPedidos() {
 			const req = await fetch('http://localhost:3000/burgers')
 
 			const data = await req.json()
@@ -56,24 +57,35 @@ export default {
 
 			this.getStatus()
 		},
-		async getStatus(){
+		async getStatus() {
 			const req = await fetch('http://localhost:3000/status')
 
 			const data = await req.json()
 
 			this.status = data
 		},
-		async deletePedido(id){
-			const req = await fetch(`http://localhost:3000/burgers/${id}`,{
+		async deletePedido(id) {
+			const req = await fetch(`http://localhost:3000/burgers/${id}`, {
 				method: "DELETE"
 			})
 			const res = await req.json()
-//msg
+			//msg
 			this.getPedidos()
 
+		},
+		async updateBurger(event, id) {
+			const option = event.target.value
+			const dataJson = JSON.stringify({ status: option })
+
+			const req = await fetch(`http://localhost:3000/burgers/${id}`, {
+				method: "PATCH",
+				headers: { "Content-Type     ": "application/json" },
+				body: dataJson
+			})
+			const res = await req.json()
 		}
 	},
-	mounted(){
+	mounted() {
 		this.getPedidos()
 	}
 }
